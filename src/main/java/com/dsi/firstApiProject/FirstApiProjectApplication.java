@@ -25,13 +25,13 @@ public class FirstApiProjectApplication {
 	PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
-   @Bean
+ /*  @Bean
 	CommandLineRunner runner() {
 		return args -> {
           // Save demo data after start
 			employeeRepository.save(new Employee("Ishrat", "admin", "admin@gmail.com" ,"Female", "admin", "Full-time"));
 
 		};
-	}
+	}*/
 
 }
