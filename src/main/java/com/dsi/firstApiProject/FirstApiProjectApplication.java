@@ -7,6 +7,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class FirstApiProjectApplication {
@@ -18,12 +20,16 @@ public class FirstApiProjectApplication {
 		SpringApplication.run(FirstApiProjectApplication.class, args);
 	}
 
+
+	@Bean
+	PasswordEncoder passwordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
    @Bean
 	CommandLineRunner runner() {
 		return args -> {
           // Save demo data after start
-			employeeRepository.save(new Employee("Most. Jannatul", "Ferdousi", "Female", "admin", "Full-time"));
-			employeeRepository.save(new Employee("Safayet", "Jamil", "Male", "member", "Full-time"));
+			employeeRepository.save(new Employee("Ishrat", "admin", "admin@gmail.com" ,"Female", "admin", "Full-time"));
 
 		};
 	}

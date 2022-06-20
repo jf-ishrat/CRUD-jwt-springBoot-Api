@@ -1,56 +1,41 @@
 package com.dsi.firstApiProject.controllers;
-
 import com.dsi.firstApiProject.domain.Employee;
-import com.dsi.firstApiProject.domain.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dsi.firstApiProject.service.EmployeeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
 public class EmployeeController {
-    private final EmployeeRepository employeeRepository;
-    @Autowired
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
+    private final EmployeeService employeeService;
 
-    @RequestMapping("/employees")
-    public List<Employee> getEmployees() {
-        List<Employee> employees = new ArrayList<>();
-        employeeRepository.findAll().forEach(employees::add);
-
-        return employees;
-    }
+@RequestMapping("/employees")
+public ResponseEntity<List<Employee>> getEmployees() {
+    return ResponseEntity.ok().body(employeeService.getEmployees());
+}
     @RequestMapping("/employees/{id}")
     public Optional<Employee> getEmployee(@PathVariable Integer id){
 
-        return employeeRepository.findById(id);
+        return employeeService.getEmployee(id);
 
     }
 
     @PostMapping("/employees")
-    public void addEmployee(@RequestBody Employee employee) {
-        employeeRepository.save(employee);
+    public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) {
+        return ResponseEntity.ok().body(employeeService.saveEmployee(employee));
     }
 
     @PutMapping("/employees/{id}")
     public void updateEmployee(@RequestBody Employee employee,@PathVariable Integer id) {
-        employeeRepository.save(employee);
+        employeeService.updateEmployee(employee,id);
     }
     @DeleteMapping("/employees/{id}")
-    public void updateEmployee(@PathVariable Integer id) {
-        employeeRepository.deleteById(id);
+    public void DeleteEmployee(@PathVariable Integer id) {
+        employeeService.deleteEmployee(id);
     }
-
-
- /*   @Autowired
-    private EmployeeService employeeService;
-
-    @RequestMapping("/employees")
-    public List<Employee> getAllEmployees(){
-        return employeeService.getAllEmployees();
-    }
-*/
 
 }

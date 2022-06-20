@@ -1,19 +1,30 @@
 package com.dsi.firstApiProject.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import javax.persistence.*;
-@Entity
+@Entity @Data
 public class Employee {
 
     public Employee(){
 
     }
 
-    public Employee(String firstName, String lastName, String gender, String role, String status){
+    public Employee(String firstName, String lastName,String email, String gender, String role, String status){
         this.firstName = firstName;
         this.lastName = lastName;
+        this.email = email;
         this.gender = gender;
         this.role = role;
         this.status = status;
+        this.username = email;
+      //  this.password = lastName;
+
+        this.password = new BCryptPasswordEncoder().encode(lastName);
 
     }
 
@@ -21,56 +32,16 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer employeeId;
     private String firstName;
+    @Column(unique=true)
+    private String email;
     private String lastName;
     private String gender;
     private String role;
     private String status;
+    @Column(unique=true)
+    @JsonIgnore
+    private String username;
+    @JsonIgnore
+    private String password;
 
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
 }
