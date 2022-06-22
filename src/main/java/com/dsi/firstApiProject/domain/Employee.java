@@ -24,7 +24,7 @@ public class Employee {
         this.username = email;
       //  this.password = lastName;
 
-        this.password = new BCryptPasswordEncoder().encode(lastName);
+        this.password = new BCryptPasswordEncoder().encode(email);
 
     }
 

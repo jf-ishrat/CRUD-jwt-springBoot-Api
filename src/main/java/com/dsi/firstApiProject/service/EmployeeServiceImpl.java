@@ -3,6 +3,8 @@ package com.dsi.firstApiProject.service;
 
 import com.dsi.firstApiProject.domain.Employee;
 import com.dsi.firstApiProject.domain.EmployeeRepository;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service @RequiredArgsConstructor
 @Transactional @Slf4j
@@ -34,7 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
             if(employee.getUsername() == null && employee.getPassword()==null){
                 employee.setUsername(employee.getEmail());
-                employee.setPassword(passwordEncoder.encode(employee.getLastName()));
+                employee.setPassword(passwordEncoder.encode(employee.getEmail()));
 
             }
             else{
@@ -77,12 +76,18 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        String usernameIDrole = String.join("-", employee.getUsername(),employee.getEmployeeId().toString(), employee.getRole());
+        Map<String,String> payload = new HashMap<String,String>();
+
+        payload.put("username", employee.getUsername());
+        payload.put("employee_id",employee.getEmployeeId().toString());
+        payload.put("role", employee.getRole());
+
+         String jsonPayload = new Gson().toJson(payload);
+         log.info("stringPayload {}",jsonPayload);
 
         authorities.add(new SimpleGrantedAuthority(employee.getRole()));
-       // authorities.add(new SimpleGrantedAuthority(employee.getEmployeeId().toString()));
 
-        return new User(usernameIDrole, employee.getPassword(), authorities);
+        return new User(jsonPayload, employee.getPassword(), authorities);
     }
 
 

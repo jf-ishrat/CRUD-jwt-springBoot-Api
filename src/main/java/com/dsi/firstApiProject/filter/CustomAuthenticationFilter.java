@@ -6,7 +6,9 @@ import com.dsi.firstApiProject.domain.Employee;
 import com.dsi.firstApiProject.domain.EmployeeRepository;
 import com.dsi.firstApiProject.service.EmployeeService;
 import com.dsi.firstApiProject.service.EmployeeServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -77,18 +79,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         response.setHeader("access_token", access_token);
         //response.setHeader("refresh_token", refresh_token);
-        Map<String, String> res_info = new HashMap<String, String>();
-        String[] usernameIDrole = user.getUsername().split("-");
-        res_info.put("employee_id", usernameIDrole[1]);
-        res_info.put("role", usernameIDrole[2]);
-        res_info.put("access_token", access_token);
-        res_info.put("refresh_token", refresh_token);
+        String payload = user.getUsername();
+
+        Gson gson = new Gson();
+        Map<String,String> convertedPayload = new HashMap<String,String>();
+        convertedPayload = (Map<String,String>) gson.fromJson(payload, convertedPayload.getClass());
+
+        convertedPayload.put("access_token", access_token);
+        convertedPayload.put("refresh_token", refresh_token);
 
         response.setContentType(APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), res_info);
-
+        new ObjectMapper().writeValue(response.getOutputStream(), convertedPayload);
 
     }
-
 
 }
