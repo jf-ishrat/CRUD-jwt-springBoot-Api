@@ -3,6 +3,8 @@ package com.dsi.firstApiProject.service;
 
 import com.dsi.firstApiProject.domain.Employee;
 import com.dsi.firstApiProject.domain.EmployeeRepository;
+import com.dsi.firstApiProject.domain.Permission;
+import com.dsi.firstApiProject.domain.PermissionRepository;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.Gson;
 import lombok.NoArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.*;
 public class EmployeeServiceImpl implements EmployeeService, UserDetailsService {
 
     private final EmployeeRepository employeeRepository;
+    private final PermissionRepository permissionRepository;
     private final PasswordEncoder passwordEncoder;
 
         @Override
@@ -40,6 +43,19 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
                 employee.setPassword(passwordEncoder.encode(employee.getPassword()));
             }
         return employeeRepository.save(employee);
+    }
+
+    @Override
+    public Permission savePermission(Permission permission) {
+        return permissionRepository.save(permission);
+    }
+
+    @Override
+    public void addPermissionToEmployee(String username, String permissionName) {
+        Employee employee = employeeRepository.findByUsername(username);
+        Permission permission = permissionRepository.findByname(permissionName);
+        employee.getPermissions().add(permission);
+
     }
 
     @Override

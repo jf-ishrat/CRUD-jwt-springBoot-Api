@@ -1,6 +1,8 @@
 package com.dsi.firstApiProject.controllers;
 import com.dsi.firstApiProject.domain.Employee;
+import com.dsi.firstApiProject.domain.Permission;
 import com.dsi.firstApiProject.service.EmployeeService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,17 @@ public ResponseEntity<List<Employee>> getEmployees() {
     public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) {
         return ResponseEntity.ok().body(employeeService.saveEmployee(employee));
     }
+    @PostMapping("/permissions/save")
+    public ResponseEntity<Permission> savePermission(@RequestBody Permission permission) {
+        return ResponseEntity.ok().body(employeeService.savePermission(permission));
+    }
+
+    @PostMapping("/permissions/addtoemployee")
+    public ResponseEntity<?> addPermissionToUser(@RequestBody PermissionToEmployee item) {
+        employeeService.addPermissionToEmployee(item.getUsername(),item.getPermissionName());
+        return ResponseEntity.ok().build();
+    }
+
 
     @PutMapping("/employees/{id}")
     public void updateEmployee(@RequestBody Employee employee,@PathVariable Integer id) {
@@ -38,4 +51,12 @@ public ResponseEntity<List<Employee>> getEmployees() {
         employeeService.deleteEmployee(id);
     }
 
+
 }
+@Data
+class PermissionToEmployee {
+    private String username;
+    private String permissionName;
+
+}
+

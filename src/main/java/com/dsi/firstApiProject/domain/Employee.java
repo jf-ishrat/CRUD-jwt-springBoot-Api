@@ -7,6 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+
 @Entity @Data
 public class Employee {
 
@@ -38,6 +41,10 @@ public class Employee {
     private String gender;
     private String role;
     private String status;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Permission> permissions = new ArrayList<>();
+
     @Column(unique=true)
     @JsonIgnore
     private String username;
