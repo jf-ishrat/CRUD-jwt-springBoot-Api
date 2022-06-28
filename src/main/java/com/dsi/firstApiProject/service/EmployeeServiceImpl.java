@@ -10,6 +10,11 @@ import com.google.gson.Gson;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,8 +45,9 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
             }
             else{
-                employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+                //employee.setPassword(passwordEncoder.encode(employee.getPassword()));
             }
+
         return employeeRepository.save(employee);
     }
 
@@ -51,10 +57,17 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
     }
 
     @Override
-    public void addPermissionToEmployee(String username, String permissionName) {
+    public void addPermissionToEmployee(String username, Collection permissionNames) {
         Employee employee = employeeRepository.findByUsername(username);
-        Permission permission = permissionRepository.findByname(permissionName);
-        employee.getPermissions().add(permission);
+        Collection<Permission> permissionArray = new ArrayList<Permission>();
+        permissionNames.stream().forEach((item) -> {
+            Permission permission = permissionRepository.findByName(item.toString());
+            permissionArray.add(permission);
+        });
+
+        employee.getPermissions().removeAll(employee.getPermissions());
+
+        employee.getPermissions().addAll(permissionArray);
 
     }
 
@@ -65,11 +78,21 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
 
     @Override
-    public List<Employee> getEmployees() {
-        List<Employee> employees = new ArrayList<>();
-        employeeRepository.findAll().forEach(employees::add);
-        return employees;
+    public Page<Employee> getEmployees(@PageableDefault(page = 1,value = 7) Optional<Integer> page) {
+//        List<Employee> employees = new ArrayList<>();
+//        employeeRepository.findAll().forEach(employees::add);
+//        return employees;
+
+         return employeeRepository.findAll(PageRequest.of(page.orElse(0), 7, Sort.by(Sort.Direction.DESC, "employeeId")));
     }
+    @Override
+    public List<Permission> getPermissions() {
+        List<Permission> permissions = new ArrayList<>();
+
+        permissionRepository.findAll().forEach(permissions::add);
+        return permissions;
+    }
+
 
     @Override
     public void updateEmployee(Employee employee, Integer id) {

@@ -48,14 +48,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        log.info("username is: {}", username);  log.info("password is: {}", password);
-
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
+
+        log.info("authenticationToken {}",authenticationToken);
 
         return authenticationManager.authenticate(authenticationToken);
 
     }
 
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        log.info("failed {}",failed);
+    }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
@@ -87,6 +92,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         convertedPayload.put("access_token", access_token);
         convertedPayload.put("refresh_token", refresh_token);
+        log.info("convertedPayload: {}",convertedPayload);
 
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), convertedPayload);
