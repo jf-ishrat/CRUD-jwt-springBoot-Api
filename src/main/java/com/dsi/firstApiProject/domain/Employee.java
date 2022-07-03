@@ -1,7 +1,9 @@
 package com.dsi.firstApiProject.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,26 +12,9 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Entity @Data
+@Entity @Data @NoArgsConstructor
+@AllArgsConstructor
 public class Employee {
-
-    public Employee(){
-
-    }
-
-    public Employee(String firstName, String lastName,String email, String gender, String role, String status){
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.gender = gender;
-        this.role = role;
-        this.status = status;
-        this.username = email;
-      //  this.password = lastName;
-
-        this.password = new BCryptPasswordEncoder().encode(email);
-
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,6 +22,8 @@ public class Employee {
     private String firstName;
     @Column(unique=true)
     private String email;
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
     private String lastName;
     private String gender;
     private String role;

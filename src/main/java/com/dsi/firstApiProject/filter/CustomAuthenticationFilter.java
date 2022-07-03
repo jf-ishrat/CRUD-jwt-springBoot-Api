@@ -59,7 +59,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        log.info("failed {}",failed);
+
+        Map <String,String> resPayload = new HashMap<String, String>();
+        resPayload.put("error_message", "User not found");
+        response.setContentType(APPLICATION_JSON_VALUE);
+        response.setStatus(404);
+        new ObjectMapper().writeValue(response.getOutputStream(), resPayload);
     }
 
     @Override
@@ -71,7 +76,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() +30*60*1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() +100*60*1000))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("role", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
@@ -87,8 +92,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String payload = user.getUsername();
 
         Gson gson = new Gson();
-        Map<String,String> convertedPayload = new HashMap<String,String>();
-        convertedPayload = (Map<String,String>) gson.fromJson(payload, convertedPayload.getClass());
+        Map<String,Object> convertedPayload = new HashMap<String,Object>();
+        convertedPayload = (Map<String,Object>) gson.fromJson(payload, convertedPayload.getClass());
 
         convertedPayload.put("access_token", access_token);
         convertedPayload.put("refresh_token", refresh_token);

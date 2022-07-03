@@ -96,6 +96,11 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
 
     @Override
     public void updateEmployee(Employee employee, Integer id) {
+        if(employee.getUsername() == null && employee.getPassword()==null){
+            employee.setUsername(employee.getEmail());
+            employee.setPassword(passwordEncoder.encode(employee.getEmail()));
+
+        }
         employeeRepository.save(employee);
     }
 
@@ -114,12 +119,16 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        Collection<String> permissionList = new ArrayList<>();
 
-        Map<String,String> payload = new HashMap<String,String>();
+        employee.getPermissions().forEach(item -> permissionList.add(item.getName()));
+
+        Map<String,Object> payload = new HashMap<String,Object>();
 
         payload.put("username", employee.getUsername());
         payload.put("employee_id",employee.getEmployeeId().toString());
         payload.put("role", employee.getRole());
+        payload.put("permissions", permissionList);
 
          String jsonPayload = new Gson().toJson(payload);
          log.info("stringPayload {}",jsonPayload);

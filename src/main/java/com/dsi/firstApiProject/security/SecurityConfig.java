@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -44,12 +46,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
       //  http.authorizeRequests().anyRequest().permitAll();
         http.authorizeRequests().antMatchers("/api/login").permitAll();
-        http.authorizeRequests().antMatchers(GET,"/api/employees").hasAnyAuthority("Admin");
-        http.authorizeRequests().antMatchers(GET,"/api/employees/**").hasAnyAuthority("Admin","Member");
-        http.authorizeRequests().antMatchers(POST,"/api/employees").hasAnyAuthority("Admin");
-        http.authorizeRequests().antMatchers(PUT,"/api/employees/**").hasAnyAuthority("Admin");
-        http.authorizeRequests().antMatchers(DELETE,"/api/employees/**").hasAnyAuthority("Admin");
+//        http.authorizeRequests().antMatchers(GET,"/api/employees").hasAnyAuthority("Admin");
+//        http.authorizeRequests().antMatchers(GET,"/api/employees/**").hasAnyAuthority("Admin","Member");
+//        http.authorizeRequests().antMatchers(POST,"/api/employees").hasAnyAuthority("Admin");
+//        http.authorizeRequests().antMatchers(PUT,"/api/employees/**").hasAnyAuthority("Admin");
+//        http.authorizeRequests().antMatchers(DELETE,"/api/employees/**").hasAnyAuthority("Admin");
+
         http.authorizeRequests().anyRequest().authenticated();
+       // http.oauth2Login(Customizer.withDefaults());
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
