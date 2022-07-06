@@ -3,17 +3,20 @@ package com.dsi.firstApiProject;
 import com.dsi.firstApiProject.domain.Employee;
 import com.dsi.firstApiProject.domain.EmployeeRepository;
 import com.dsi.firstApiProject.domain.Permission;
+import com.dsi.firstApiProject.security.AppProperties;
 import com.dsi.firstApiProject.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
+@EnableConfigurationProperties(AppProperties.class)
 public class FirstApiProjectApplication {
 
 	@Autowired

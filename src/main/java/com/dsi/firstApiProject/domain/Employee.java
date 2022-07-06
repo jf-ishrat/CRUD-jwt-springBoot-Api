@@ -1,12 +1,10 @@
 package com.dsi.firstApiProject.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,8 +20,6 @@ public class Employee {
     private String firstName;
     @Column(unique=true)
     private String email;
-    @Enumerated(EnumType.STRING)
-    private Provider provider;
     private String lastName;
     private String gender;
     private String role;
@@ -37,5 +33,10 @@ public class Employee {
     private String username;
     @JsonIgnore
     private String password;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+    private String providerId;
 
 }

@@ -5,6 +5,8 @@ import com.dsi.firstApiProject.domain.Employee;
 import com.dsi.firstApiProject.domain.EmployeeRepository;
 import com.dsi.firstApiProject.domain.Permission;
 import com.dsi.firstApiProject.domain.PermissionRepository;
+import com.dsi.firstApiProject.exception.ResourceNotFoundException;
+import com.dsi.firstApiProject.service.oauth2.UserPrincipal;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.Gson;
 import lombok.NoArgsConstructor;
@@ -43,9 +45,6 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
                 employee.setUsername(employee.getEmail());
                 employee.setPassword(passwordEncoder.encode(employee.getEmail()));
 
-            }
-            else{
-                //employee.setPassword(passwordEncoder.encode(employee.getPassword()));
             }
 
         return employeeRepository.save(employee);
@@ -136,6 +135,14 @@ public class EmployeeServiceImpl implements EmployeeService, UserDetailsService 
         authorities.add(new SimpleGrantedAuthority(employee.getRole()));
 
         return new User(jsonPayload, employee.getPassword(), authorities);
+    }
+
+    public UserDetails loadUserById(Integer id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Employee", "id", id)
+        );
+
+        return UserPrincipal.create(employee);
     }
 
 

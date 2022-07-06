@@ -1,5 +1,5 @@
 package com.dsi.firstApiProject.domain;
 
-public enum Provider {
+public enum AuthProvider {
     LOCAL, GOOGLE
 }
